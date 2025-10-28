@@ -8,6 +8,16 @@ GroupRideApp is a web application that connects cyclists with group rides tailor
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes
+
+- **October 28, 2025:** Updated brand color palette to use exact hex codes:
+  - Portland Orange (#FF5E33) for primary CTAs and buttons
+  - June Bud (#B7CF4F) for secondary actions
+  - Dark Blue (#1A0089) for text and supporting elements
+  - White Chocolate (#EFE7D3) for backgrounds
+- **October 28, 2025:** Converted all distance measurements to imperial units (miles)
+- **October 28, 2025:** Rebranded from "RideConnect" to "GroupRideApp"
+
 ## System Architecture
 
 ### Frontend Architecture
@@ -19,6 +29,14 @@ Preferred communication style: Simple, everyday language.
 **UI Components:** shadcn/ui component library built on Radix UI primitives, providing a comprehensive set of accessible, customizable components. The design system follows a "New York" style variant with custom theming.
 
 **Styling:** Tailwind CSS with custom design tokens defined in CSS variables, supporting both light and dark modes. The design uses a monospace font (JetBrains Mono) for a distinctive, data-focused aesthetic inspired by activity platforms like Strava.
+
+**Brand Colors:**
+- Portland Orange: #FF5E33 (HSL: 13, 100%, 60%) - Primary CTAs and buttons
+- June Bud: #B7CF4F (HSL: 71, 57%, 56%) - Secondary actions
+- Dark Blue: #1A0089 (HSL: 251, 100%, 27%) - Text and supporting elements
+- White Chocolate: #EFE7D3 (HSL: 43, 47%, 88%) - Background variations
+
+**Units:** All distance measurements use imperial units (miles), not metric.
 
 **State Management:** TanStack Query (React Query) for server state management, caching, and synchronization. Local component state handled with React hooks.
 
