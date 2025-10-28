@@ -36,7 +36,7 @@ export function AppSidebar() {
             <Bike className="h-6 w-6 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="text-lg font-bold">RideConnect</h1>
+            <h1 className="text-lg font-bold">GroupRideApp</h1>
             <p className="text-xs text-muted-foreground">Find your ride</p>
           </div>
         </div>

@@ -4,21 +4,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus } from "lucide-react";
+import { Plus, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { geocodeAddress } from "@/lib/geocoding";
 
 export function CreateRideModal() {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
+  const [isGeocoding, setIsGeocoding] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     type: "",
     date: "",
     time: "",
-    location: "",
+    city: "",
+    state: "",
+    zipCode: "",
     distance: "",
     difficulty: "",
     pace: "",
@@ -45,7 +49,9 @@ export function CreateRideModal() {
         type: "",
         date: "",
         time: "",
-        location: "",
+        city: "",
+        state: "",
+        zipCode: "",
         distance: "",
         difficulty: "",
         pace: "",
@@ -63,13 +69,33 @@ export function CreateRideModal() {
     },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    setIsGeocoding(true);
+    const coordinates = await geocodeAddress(
+      formData.city,
+      formData.state,
+      formData.zipCode
+    );
+    setIsGeocoding(false);
+
+    if (!coordinates) {
+      toast({
+        title: "Geocoding Failed",
+        description: "Could not find coordinates for the provided address. Please check the city and state.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     createMutation.mutate({
       ...formData,
       date: new Date(formData.date),
       distance: parseInt(formData.distance),
       maxParticipants: parseInt(formData.maxParticipants),
+      latitude: coordinates.lat,
+      longitude: coordinates.lng,
     });
   };
 
@@ -188,16 +214,40 @@ export function CreateRideModal() {
               </div>
             </div>
 
-            <div>
-              <Label htmlFor="location">Meeting Location</Label>
-              <Input
-                id="location"
-                value={formData.location}
-                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                placeholder="Trailhead parking lot, Main St"
-                required
-                data-testid="input-location"
-              />
+            <div className="space-y-2">
+              <Label>Meeting Location</Label>
+              <div className="grid grid-cols-2 gap-4">
+                <Input
+                  id="city"
+                  value={formData.city}
+                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                  placeholder="City (e.g., Oakland)"
+                  required
+                  data-testid="input-city"
+                />
+                <div className="grid grid-cols-2 gap-2">
+                  <Input
+                    id="state"
+                    value={formData.state}
+                    onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                    placeholder="State (CA)"
+                    required
+                    data-testid="input-state"
+                    maxLength={2}
+                  />
+                  <Input
+                    id="zipCode"
+                    value={formData.zipCode}
+                    onChange={(e) => setFormData({ ...formData, zipCode: e.target.value })}
+                    placeholder="ZIP"
+                    data-testid="input-zip"
+                    maxLength={5}
+                  />
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Enter the city and state where riders should meet. ZIP code is optional but helps with accuracy.
+              </p>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -247,17 +297,26 @@ export function CreateRideModal() {
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
-              disabled={createMutation.isPending}
+              disabled={createMutation.isPending || isGeocoding}
               data-testid="button-cancel-create"
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              disabled={createMutation.isPending}
+              disabled={createMutation.isPending || isGeocoding}
               data-testid="button-submit-ride"
             >
-              {createMutation.isPending ? "Creating..." : "Create Ride"}
+              {isGeocoding ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Finding location...
+                </>
+              ) : createMutation.isPending ? (
+                "Creating..."
+              ) : (
+                "Create Ride"
+              )}
             </Button>
           </div>
         </form>
