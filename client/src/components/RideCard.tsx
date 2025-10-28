@@ -72,7 +72,7 @@ export function RideCard({ ride, onClick }: RideCardProps) {
           </div>
           <div className="flex items-center gap-2">
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
-            <span className="font-medium">{ride.distance} km • {ride.pace}</span>
+            <span className="font-medium">{ride.distance} mi • {ride.pace}</span>
           </div>
         </div>
 

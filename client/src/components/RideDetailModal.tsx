@@ -82,7 +82,7 @@ export function RideDetailModal({
               <TrendingUp className="h-5 w-5 text-primary" />
               <div>
                 <p className="text-xs text-muted-foreground">Distance & Pace</p>
-                <p className="font-semibold">{ride.distance} km • {ride.pace}</p>
+                <p className="font-semibold">{ride.distance} mi • {ride.pace}</p>
               </div>
             </div>
 

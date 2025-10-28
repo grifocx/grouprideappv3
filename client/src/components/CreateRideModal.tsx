@@ -252,7 +252,7 @@ export function CreateRideModal() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="distance">Distance (km)</Label>
+                <Label htmlFor="distance">Distance (mi)</Label>
                 <Input
                   id="distance"
                   type="number"
