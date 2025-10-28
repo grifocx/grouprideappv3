@@ -77,6 +77,8 @@ export const insertRideSchema = createInsertSchema(rides).omit({
   id: true,
   createdAt: true,
   isArchived: true,
+}).extend({
+  date: z.coerce.date(),
 });
 
 export const insertRideParticipantSchema = createInsertSchema(rideParticipants).omit({
