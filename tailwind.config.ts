@@ -11,6 +11,12 @@ export default {
         sm: ".1875rem", /* 3px */
       },
       colors: {
+        // Brand colors (exact hex codes)
+        'dark-blue': '#1A0089',
+        'portland-orange': '#FF5E33',
+        'white-chocolate': '#EFE7D3',
+        'june-bud': '#B7CF4F',
+        
         // Flat / base colors (regular buttons)
         background: "hsl(var(--background) / <alpha-value>)",
         foreground: "hsl(var(--foreground) / <alpha-value>)",
