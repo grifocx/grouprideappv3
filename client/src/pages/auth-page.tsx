@@ -36,7 +36,7 @@ export default function AuthPage() {
               <Bike className="h-7 w-7 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold">RideConnect</h1>
+              <h1 className="text-2xl font-bold">GroupRideApp</h1>
               <p className="text-sm text-muted-foreground">Find your perfect ride</p>
             </div>
           </div>

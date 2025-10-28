@@ -1,8 +1,8 @@
-# RideConnect - Cyclist Group Ride Connection Platform
+# GroupRideApp - Cyclist Group Ride Connection Platform
 
 ## Overview
 
-RideConnect is a web application that connects cyclists with group rides tailored to their preferences. The platform allows users to discover rides, organize events, view ride locations on an interactive map, and manage their cycling community connections. Users can filter rides by type (MTB, Road, Gravel), difficulty level, pace, terrain, and location to find their perfect cycling experience.
+GroupRideApp is a web application that connects cyclists with group rides tailored to their preferences. The platform allows users to discover rides, organize events, view ride locations on an interactive map, and manage their cycling community connections. Users can filter rides by type (MTB, Road, Gravel), difficulty level, pace, terrain, and location to find their perfect cycling experience.
 
 ## User Preferences
 

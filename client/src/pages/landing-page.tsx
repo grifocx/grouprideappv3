@@ -14,7 +14,7 @@ export default function LandingPage() {
             <div className="h-8 w-8 rounded-md bg-primary flex items-center justify-center">
               <Bike className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="font-bold text-xl">RideConnect</span>
+            <span className="font-bold text-xl">GroupRideApp</span>
           </div>
           <Button variant="default" data-testid="button-get-started" asChild>
             <Link href="/auth">
@@ -170,7 +170,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to Ride?</h2>
           <p className="text-lg opacity-90 mb-8 max-w-2xl mx-auto">
-            Join RideConnect today and discover your next cycling adventure. Connect with riders, organize events, and never ride alone.
+            Join GroupRideApp today and discover your next cycling adventure. Connect with riders, organize events, and never ride alone.
           </p>
           <Button size="lg" variant="secondary" data-testid="button-cta-signup" asChild>
             <Link href="/auth">
@@ -189,10 +189,10 @@ export default function LandingPage() {
               <div className="h-6 w-6 rounded-md bg-primary flex items-center justify-center">
                 <Bike className="h-4 w-4 text-primary-foreground" />
               </div>
-              <span className="font-semibold">RideConnect</span>
+              <span className="font-semibold">GroupRideApp</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              © 2025 RideConnect. Connecting cyclists, one ride at a time.
+              © 2025 GroupRideApp. Connecting cyclists, one ride at a time.
             </p>
           </div>
         </div>
