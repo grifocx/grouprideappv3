@@ -1,0 +1,88 @@
+# RideConnect - Cyclist Group Ride Connection Platform
+
+## Overview
+
+RideConnect is a web application that connects cyclists with group rides tailored to their preferences. The platform allows users to discover rides, organize events, view ride locations on an interactive map, and manage their cycling community connections. Users can filter rides by type (MTB, Road, Gravel), difficulty level, pace, terrain, and location to find their perfect cycling experience.
+
+## User Preferences
+
+Preferred communication style: Simple, everyday language.
+
+## System Architecture
+
+### Frontend Architecture
+
+**Framework:** React 18+ with TypeScript, using Vite as the build tool and development server.
+
+**Routing:** Wouter for lightweight client-side routing, with protected routes requiring authentication.
+
+**UI Components:** shadcn/ui component library built on Radix UI primitives, providing a comprehensive set of accessible, customizable components. The design system follows a "New York" style variant with custom theming.
+
+**Styling:** Tailwind CSS with custom design tokens defined in CSS variables, supporting both light and dark modes. The design uses a monospace font (JetBrains Mono) for a distinctive, data-focused aesthetic inspired by activity platforms like Strava.
+
+**State Management:** TanStack Query (React Query) for server state management, caching, and synchronization. Local component state handled with React hooks.
+
+**Form Handling:** React Hook Form with Zod schema validation for type-safe form inputs.
+
+### Backend Architecture
+
+**Server Framework:** Express.js running on Node.js with TypeScript.
+
+**Authentication:** Passport.js with Local Strategy for username/password authentication. Sessions are managed using express-session with PostgreSQL-backed session storage (connect-pg-simple).
+
+**Password Security:** Scrypt-based password hashing with random salts for secure credential storage.
+
+**API Design:** RESTful API endpoints under `/api` namespace, with authentication middleware protecting user-specific routes.
+
+**Database Access:** Drizzle ORM for type-safe database queries and schema management, providing automatic TypeScript types from database schema.
+
+### Data Storage
+
+**Database:** PostgreSQL via Neon serverless database, chosen for scalability and managed infrastructure.
+
+**Schema Design:**
+- **Users table:** Stores authentication credentials, profile information (email, club affiliation), and geographic coordinates for location-based features.
+- **User Preferences table:** Stores personalized filter settings (ride types, difficulties, paces, terrains, available days, distance ranges, search radius) with cascade deletion on user removal.
+- **Rides table:** Contains ride details including title, type, date/time, location coordinates, distance, difficulty, pace, terrain, participant limits, and organizer reference. Supports archiving for completed rides.
+- **Ride Participants table:** Junction table managing many-to-many relationships between users and rides with status tracking.
+- **Comments table:** User-generated comments on rides with timestamps and references to both users and rides.
+
+**Geographic Features:** Latitude/longitude coordinates stored for both users and rides to enable location-based filtering and map visualization.
+
+### External Dependencies
+
+**UI Component Libraries:**
+- Radix UI primitives for accessible, unstyled component foundations
+- Tailwind CSS for utility-first styling
+- Lucide React for iconography
+
+**Mapping:**
+- Leaflet.js for interactive map visualization with OpenStreetMap tiles
+- Client-side map rendering with marker clustering for ride locations
+
+**Development Tools:**
+- Vite for fast development server and optimized production builds
+- Replit-specific plugins for runtime error handling, cartographer, and dev banner (development environment only)
+- TypeScript for type safety across the entire stack
+
+**Database & ORM:**
+- Neon PostgreSQL serverless database
+- Neon WebSocket support for database connections
+- Drizzle ORM for schema management and queries
+- Drizzle Kit for database migrations
+
+**Session Management:**
+- PostgreSQL-backed session store for persistent authentication across server restarts
+- Secure session configuration with environment-based secrets
+
+**Validation:**
+- Zod for runtime type validation and schema definition
+- Drizzle-Zod for automatic schema generation from database models
+
+**Date Handling:**
+- date-fns for date formatting and relative time displays
+
+**Build & Runtime:**
+- esbuild for server-side bundling
+- tsx for TypeScript execution in development
+- Path aliases configured for clean imports (@/, @shared/, @assets/)
