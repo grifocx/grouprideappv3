@@ -10,8 +10,11 @@ import {
   SidebarHeader,
   SidebarFooter,
 } from "@/components/ui/sidebar";
-import { Home, Map, Calendar, User, Archive, Bike } from "lucide-react";
+import { Home, Map, Calendar, User, Archive, Bike, LogOut } from "lucide-react";
 import { Link, useLocation } from "wouter";
+import { useAuth } from "@/hooks/use-auth";
+import { Button } from "@/components/ui/button";
+import { UserAvatar } from "./UserAvatar";
 
 const menuItems = [
   { title: "Discover", url: "/", icon: Home },
@@ -23,6 +26,7 @@ const menuItems = [
 
 export function AppSidebar() {
   const [location] = useLocation();
+  const { user, logoutMutation } = useAuth();
 
   return (
     <Sidebar>
@@ -62,10 +66,27 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-4 border-t">
-        <p className="text-xs text-muted-foreground text-center">
-          Connect with cyclists worldwide
-        </p>
+      <SidebarFooter className="p-4 border-t space-y-4">
+        {user && (
+          <div className="flex items-center gap-3 px-2">
+            <UserAvatar name={user.username} size="sm" />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium truncate">{user.username}</p>
+              <p className="text-xs text-muted-foreground">Cyclist</p>
+            </div>
+          </div>
+        )}
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full"
+          onClick={() => logoutMutation.mutate()}
+          disabled={logoutMutation.isPending}
+          data-testid="button-logout"
+        >
+          <LogOut className="h-4 w-4 mr-2" />
+          {logoutMutation.isPending ? "Logging out..." : "Logout"}
+        </Button>
       </SidebarFooter>
     </Sidebar>
   );
