@@ -66,6 +66,93 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Rides routes
+  app.get("/api/rides", async (req, res, next) => {
+    try {
+      const rides = await storage.getAllRides();
+      res.json(rides);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.get("/api/rides/:id", async (req, res, next) => {
+    try {
+      const ride = await storage.getRide(req.params.id);
+      if (!ride) {
+        return res.status(404).send("Ride not found");
+      }
+      res.json(ride);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.get("/api/my-rides", requireAuth, async (req, res, next) => {
+    try {
+      const rides = await storage.getRidesByOrganizer(req.user!.id);
+      res.json(rides);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post("/api/rides", requireAuth, async (req, res, next) => {
+    try {
+      const { insertRideSchema } = await import("@shared/schema");
+      const validatedData = insertRideSchema.parse({
+        ...req.body,
+        organizerId: req.user!.id,
+      });
+
+      const ride = await storage.createRide(validatedData);
+      res.status(201).json(ride);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.patch("/api/rides/:id", requireAuth, async (req, res, next) => {
+    try {
+      const ride = await storage.getRide(req.params.id);
+      if (!ride) {
+        return res.status(404).send("Ride not found");
+      }
+      if (ride.organizerId !== req.user!.id) {
+        return res.status(403).send("Not authorized");
+      }
+
+      const { insertRideSchema } = await import("@shared/schema");
+      // Prevent changing organizerId
+      const validatedData = insertRideSchema
+        .omit({ organizerId: true })
+        .partial()
+        .parse(req.body);
+
+      const updated = await storage.updateRide(req.params.id, validatedData);
+      res.json(updated);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.delete("/api/rides/:id", requireAuth, async (req, res, next) => {
+    try {
+      const ride = await storage.getRide(req.params.id);
+      if (!ride) {
+        return res.status(404).send("Ride not found");
+      }
+      if (ride.organizerId !== req.user!.id) {
+        return res.status(403).send("Not authorized");
+      }
+
+      await storage.deleteRide(req.params.id);
+      res.sendStatus(204);
+    } catch (error) {
+      next(error);
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;

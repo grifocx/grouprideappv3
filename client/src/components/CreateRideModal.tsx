@@ -6,12 +6,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Plus } from "lucide-react";
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
-interface CreateRideModalProps {
-  onCreateRide?: (ride: any) => void;
-}
-
-export function CreateRideModal({ onCreateRide }: CreateRideModalProps) {
+export function CreateRideModal() {
+  const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
@@ -22,26 +22,54 @@ export function CreateRideModal({ onCreateRide }: CreateRideModalProps) {
     distance: "",
     difficulty: "",
     pace: "",
+    terrain: "",
     maxParticipants: "",
     description: "",
   });
 
+  const createMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await apiRequest("POST", "/api/rides", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/rides"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/my-rides"] });
+      toast({
+        title: "Success",
+        description: "Ride created successfully",
+      });
+      setOpen(false);
+      setFormData({
+        title: "",
+        type: "",
+        date: "",
+        time: "",
+        location: "",
+        distance: "",
+        difficulty: "",
+        pace: "",
+        terrain: "",
+        maxParticipants: "",
+        description: "",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to create ride",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Creating ride:', formData);
-    onCreateRide?.(formData);
-    setOpen(false);
-    setFormData({
-      title: "",
-      type: "",
-      date: "",
-      time: "",
-      location: "",
-      distance: "",
-      difficulty: "",
-      pace: "",
-      maxParticipants: "",
-      description: "",
+    createMutation.mutate({
+      ...formData,
+      date: new Date(formData.date),
+      distance: parseInt(formData.distance),
+      maxParticipants: parseInt(formData.maxParticipants),
     });
   };
 
@@ -74,11 +102,8 @@ export function CreateRideModal({ onCreateRide }: CreateRideModalProps) {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="type">Ride Type</Label>
-                <Select
-                  value={formData.type}
-                  onValueChange={(value) => setFormData({ ...formData, type: value })}
-                >
-                  <SelectTrigger id="type" data-testid="select-ride-type">
+                <Select value={formData.type} onValueChange={(value) => setFormData({ ...formData, type: value })}>
+                  <SelectTrigger data-testid="select-ride-type">
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -91,11 +116,8 @@ export function CreateRideModal({ onCreateRide }: CreateRideModalProps) {
 
               <div>
                 <Label htmlFor="difficulty">Difficulty</Label>
-                <Select
-                  value={formData.difficulty}
-                  onValueChange={(value) => setFormData({ ...formData, difficulty: value })}
-                >
-                  <SelectTrigger id="difficulty" data-testid="select-difficulty">
+                <Select value={formData.difficulty} onValueChange={(value) => setFormData({ ...formData, difficulty: value })}>
+                  <SelectTrigger data-testid="select-difficulty">
                     <SelectValue placeholder="Select difficulty" />
                   </SelectTrigger>
                   <SelectContent>
@@ -103,6 +125,38 @@ export function CreateRideModal({ onCreateRide }: CreateRideModalProps) {
                     <SelectItem value="Intermediate">Intermediate</SelectItem>
                     <SelectItem value="Advanced">Advanced</SelectItem>
                     <SelectItem value="Expert">Expert</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="pace">Pace</Label>
+                <Select value={formData.pace} onValueChange={(value) => setFormData({ ...formData, pace: value })}>
+                  <SelectTrigger data-testid="select-pace">
+                    <SelectValue placeholder="Select pace" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Leisurely">Leisurely</SelectItem>
+                    <SelectItem value="Moderate">Moderate</SelectItem>
+                    <SelectItem value="Brisk">Brisk</SelectItem>
+                    <SelectItem value="Fast">Fast</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="terrain">Terrain</Label>
+                <Select value={formData.terrain} onValueChange={(value) => setFormData({ ...formData, terrain: value })}>
+                  <SelectTrigger data-testid="select-terrain">
+                    <SelectValue placeholder="Select terrain" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Flat">Flat</SelectItem>
+                    <SelectItem value="Rolling">Rolling</SelectItem>
+                    <SelectItem value="Hilly">Hilly</SelectItem>
+                    <SelectItem value="Mountainous">Mountainous</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -135,51 +189,39 @@ export function CreateRideModal({ onCreateRide }: CreateRideModalProps) {
             </div>
 
             <div>
-              <Label htmlFor="location">Location</Label>
+              <Label htmlFor="location">Meeting Location</Label>
               <Input
                 id="location"
                 value={formData.location}
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                placeholder="Starting point or trail name"
+                placeholder="Trailhead parking lot, Main St"
                 required
                 data-testid="input-location"
               />
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="distance">Distance (mi)</Label>
+                <Label htmlFor="distance">Distance (km)</Label>
                 <Input
                   id="distance"
                   type="number"
                   value={formData.distance}
                   onChange={(e) => setFormData({ ...formData, distance: e.target.value })}
-                  placeholder="15"
+                  placeholder="50"
                   required
                   data-testid="input-distance"
                 />
               </div>
 
               <div>
-                <Label htmlFor="pace">Pace</Label>
-                <Input
-                  id="pace"
-                  value={formData.pace}
-                  onChange={(e) => setFormData({ ...formData, pace: e.target.value })}
-                  placeholder="Moderate"
-                  required
-                  data-testid="input-pace"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="maxParticipants">Max Riders</Label>
+                <Label htmlFor="maxParticipants">Max Participants</Label>
                 <Input
                   id="maxParticipants"
                   type="number"
                   value={formData.maxParticipants}
                   onChange={(e) => setFormData({ ...formData, maxParticipants: e.target.value })}
-                  placeholder="8"
+                  placeholder="10"
                   required
                   data-testid="input-max-participants"
                 />
@@ -192,24 +234,30 @@ export function CreateRideModal({ onCreateRide }: CreateRideModalProps) {
                 id="description"
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Tell riders what to expect..."
-                rows={4}
+                placeholder="Add route details, stops, what to bring..."
+                className="resize-none"
+                rows={3}
                 data-testid="textarea-description"
               />
             </div>
           </div>
 
-          <div className="flex justify-end gap-3">
+          <div className="flex gap-3 justify-end">
             <Button
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
-              data-testid="button-cancel"
+              disabled={createMutation.isPending}
+              data-testid="button-cancel-create"
             >
               Cancel
             </Button>
-            <Button type="submit" data-testid="button-submit-ride">
-              Create Ride
+            <Button
+              type="submit"
+              disabled={createMutation.isPending}
+              data-testid="button-submit-ride"
+            >
+              {createMutation.isPending ? "Creating..." : "Create Ride"}
             </Button>
           </div>
         </form>
