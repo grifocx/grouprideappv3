@@ -14,12 +14,18 @@ import MyRidesPage from "@/pages/MyRidesPage";
 import ArchivePage from "@/pages/ArchivePage";
 import ProfilePage from "@/pages/ProfilePage";
 import AuthPage from "@/pages/auth-page";
+import LandingPage from "@/pages/landing-page";
 import NotFound from "@/pages/not-found";
 
 function Router() {
+  const { user } = useAuth();
+  
   return (
     <Switch>
-      <ProtectedRoute path="/" component={Dashboard} />
+      <Route path="/">
+        {user ? <Dashboard /> : <LandingPage />}
+      </Route>
+      <ProtectedRoute path="/dashboard" component={Dashboard} />
       <ProtectedRoute path="/map" component={MapPage} />
       <ProtectedRoute path="/my-rides" component={MyRidesPage} />
       <ProtectedRoute path="/archive" component={ArchivePage} />
@@ -38,7 +44,7 @@ function AppContent() {
     "--sidebar-width-icon": "4rem",
   };
 
-  if (location === "/auth") {
+  if (location === "/auth" || (location === "/" && !user)) {
     return <Router />;
   }
 
