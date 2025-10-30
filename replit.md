@@ -10,6 +10,13 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+- **October 30, 2025:** Implemented ride joining feature:
+  - Users can now join and leave rides through the ride detail modal
+  - Real-time participant count displayed (e.g., "3 / 8 riders")
+  - Join/leave buttons disabled while loading to prevent race conditions
+  - Validation prevents joining full or archived rides
+  - My Rides page redesigned with tabs showing both "Organized" and "Joined" rides
+  - API endpoints: POST `/api/rides/:id/join`, DELETE `/api/rides/:id/leave`, GET `/api/joined-rides`
 - **October 28, 2025:** Updated brand color palette to use exact hex codes:
   - Portland Orange (#FF5E33) for primary CTAs and buttons
   - June Bud (#B7CF4F) for secondary actions
