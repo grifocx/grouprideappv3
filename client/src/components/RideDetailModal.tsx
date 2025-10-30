@@ -33,6 +33,7 @@ export function RideDetailModal({
   const isUserJoined = participants.some(p => p.userId === currentUser?.id);
   const isRideFull = participants.length >= (ride?.maxParticipants || 0);
   const isOrganizer = ride?.organizerId === currentUser?.id;
+  const isArchived = ride?.isArchived || false;
 
   const joinMutation = useMutation({
     mutationFn: async () => {
@@ -175,26 +176,26 @@ export function RideDetailModal({
             </div>
           )}
 
-          {currentUser && !isOrganizer && (
+          {currentUser && !isOrganizer && !isArchived && (
             <div className="pt-4 border-t">
               {isUserJoined ? (
                 <Button
                   variant="outline"
                   className="w-full"
                   onClick={() => leaveMutation.mutate()}
-                  disabled={leaveMutation.isPending}
+                  disabled={leaveMutation.isPending || isLoadingParticipants}
                   data-testid="button-leave-ride"
                 >
-                  {leaveMutation.isPending ? "Leaving..." : "Leave Ride"}
+                  {leaveMutation.isPending ? "Leaving..." : isLoadingParticipants ? "Loading..." : "Leave Ride"}
                 </Button>
               ) : (
                 <Button
                   className="w-full"
                   onClick={() => joinMutation.mutate()}
-                  disabled={joinMutation.isPending || isRideFull}
+                  disabled={joinMutation.isPending || isRideFull || isLoadingParticipants}
                   data-testid="button-join-ride"
                 >
-                  {joinMutation.isPending ? "Joining..." : isRideFull ? "Ride Full" : "Join Ride"}
+                  {joinMutation.isPending ? "Joining..." : isLoadingParticipants ? "Loading..." : isRideFull ? "Ride Full" : "Join Ride"}
                 </Button>
               )}
             </div>

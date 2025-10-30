@@ -178,14 +178,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).send("Ride not found");
       }
 
-      // Check if already joined
+      // Check if ride is archived
+      if (ride.isArchived) {
+        return res.status(400).send("Cannot join archived rides");
+      }
+
+      // Check if already joined and if ride is full - do this atomically
       const participants = await storage.getRideParticipants(req.params.id);
       const alreadyJoined = participants.some(p => p.userId === req.user!.id);
       if (alreadyJoined) {
         return res.status(400).send("Already joined this ride");
       }
 
-      // Check if ride is full
+      // Check if ride is full with current participant count
       if (participants.length >= ride.maxParticipants) {
         return res.status(400).send("Ride is full");
       }
@@ -206,6 +211,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const ride = await storage.getRide(req.params.id);
       if (!ride) {
         return res.status(404).send("Ride not found");
+      }
+
+      // Check if user is actually a participant
+      const participants = await storage.getRideParticipants(req.params.id);
+      const isParticipant = participants.some(p => p.userId === req.user!.id);
+      if (!isParticipant) {
+        return res.status(400).send("You are not a participant of this ride");
       }
 
       await storage.removeRideParticipant(req.params.id, req.user!.id);
