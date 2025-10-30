@@ -1,8 +1,12 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Calendar, Clock, MapPin, TrendingUp, Mountain, Users } from "lucide-react";
 import { format } from "date-fns";
-import { Ride } from "@shared/schema";
+import { Ride, RideParticipant } from "@shared/schema";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { queryClient, apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 interface RideDetailModalProps {
   ride: Ride | null;
@@ -15,6 +19,65 @@ export function RideDetailModal({
   open,
   onOpenChange,
 }: RideDetailModalProps) {
+  const { toast } = useToast();
+  
+  const { data: currentUser } = useQuery({
+    queryKey: ["/api/user"],
+  });
+
+  const { data: participants = [], isLoading: isLoadingParticipants } = useQuery<RideParticipant[]>({
+    queryKey: ["/api/rides", ride?.id, "participants"],
+    enabled: !!ride?.id && open,
+  });
+
+  const isUserJoined = participants.some(p => p.userId === currentUser?.id);
+  const isRideFull = participants.length >= (ride?.maxParticipants || 0);
+  const isOrganizer = ride?.organizerId === currentUser?.id;
+
+  const joinMutation = useMutation({
+    mutationFn: async () => {
+      return await apiRequest("POST", `/api/rides/${ride!.id}/join`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/rides", ride!.id, "participants"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/joined-rides"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/rides"] });
+      toast({
+        title: "Success",
+        description: "You've joined the ride!",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to join ride",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const leaveMutation = useMutation({
+    mutationFn: async () => {
+      return await apiRequest("DELETE", `/api/rides/${ride!.id}/leave`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/rides", ride!.id, "participants"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/joined-rides"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/rides"] });
+      toast({
+        title: "Success",
+        description: "You've left the ride",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to leave ride",
+        variant: "destructive",
+      });
+    },
+  });
+
   if (!ride) return null;
 
   const difficultyColors: Record<string, string> = {
@@ -97,8 +160,10 @@ export function RideDetailModal({
             <div className="flex items-center gap-3 p-4 rounded-lg bg-muted col-span-2">
               <Users className="h-5 w-5 text-primary" />
               <div>
-                <p className="text-xs text-muted-foreground">Max Participants</p>
-                <p className="font-semibold">{ride.maxParticipants} riders</p>
+                <p className="text-xs text-muted-foreground">Participants</p>
+                <p className="font-semibold" data-testid="text-participant-count">
+                  {isLoadingParticipants ? "..." : `${participants.length} / ${ride.maxParticipants}`} riders
+                </p>
               </div>
             </div>
           </div>
@@ -107,6 +172,31 @@ export function RideDetailModal({
             <div>
               <h3 className="font-semibold text-lg mb-3">Description</h3>
               <p className="text-muted-foreground whitespace-pre-wrap">{ride.description}</p>
+            </div>
+          )}
+
+          {currentUser && !isOrganizer && (
+            <div className="pt-4 border-t">
+              {isUserJoined ? (
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => leaveMutation.mutate()}
+                  disabled={leaveMutation.isPending}
+                  data-testid="button-leave-ride"
+                >
+                  {leaveMutation.isPending ? "Leaving..." : "Leave Ride"}
+                </Button>
+              ) : (
+                <Button
+                  className="w-full"
+                  onClick={() => joinMutation.mutate()}
+                  disabled={joinMutation.isPending || isRideFull}
+                  data-testid="button-join-ride"
+                >
+                  {joinMutation.isPending ? "Joining..." : isRideFull ? "Ride Full" : "Join Ride"}
+                </Button>
+              )}
             </div>
           )}
         </div>

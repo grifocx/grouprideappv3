@@ -153,6 +153,77 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Ride participation routes
+  app.get("/api/joined-rides", requireAuth, async (req, res, next) => {
+    try {
+      const participations = await storage.getUserParticipations(req.user!.id);
+      const rideIds = participations.map(p => p.rideId);
+      
+      if (rideIds.length === 0) {
+        return res.json([]);
+      }
+      
+      const allRides = await storage.getAllRides();
+      const joinedRides = allRides.filter(ride => rideIds.includes(ride.id));
+      res.json(joinedRides);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post("/api/rides/:id/join", requireAuth, async (req, res, next) => {
+    try {
+      const ride = await storage.getRide(req.params.id);
+      if (!ride) {
+        return res.status(404).send("Ride not found");
+      }
+
+      // Check if already joined
+      const participants = await storage.getRideParticipants(req.params.id);
+      const alreadyJoined = participants.some(p => p.userId === req.user!.id);
+      if (alreadyJoined) {
+        return res.status(400).send("Already joined this ride");
+      }
+
+      // Check if ride is full
+      if (participants.length >= ride.maxParticipants) {
+        return res.status(400).send("Ride is full");
+      }
+
+      const participant = await storage.addRideParticipant({
+        rideId: req.params.id,
+        userId: req.user!.id,
+      });
+      
+      res.status(201).json(participant);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.delete("/api/rides/:id/leave", requireAuth, async (req, res, next) => {
+    try {
+      const ride = await storage.getRide(req.params.id);
+      if (!ride) {
+        return res.status(404).send("Ride not found");
+      }
+
+      await storage.removeRideParticipant(req.params.id, req.user!.id);
+      res.sendStatus(204);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.get("/api/rides/:id/participants", async (req, res, next) => {
+    try {
+      const participants = await storage.getRideParticipants(req.params.id);
+      res.json(participants);
+    } catch (error) {
+      next(error);
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
