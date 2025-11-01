@@ -23,11 +23,11 @@ A web application connecting cyclists to group rides with smart matching, intera
 
 ### Phase 2: Authentication & Profiles (Week 1-2)
 **User Management:**
-- [ ] Username/password registration
-- [ ] Login/logout system
-- [ ] Session management
-- [ ] Profile creation and editing
-- [ ] Profile fields:
+- [x] Username/password registration
+- [x] Login/logout system
+- [x] Session management
+- [x] Profile creation and editing
+- [x] Profile fields:
   - Username, email, password
   - Location (city/zip)
   - Riding preferences
@@ -36,7 +36,7 @@ A web application connecting cyclists to group rides with smart matching, intera
 
 ### Phase 3: Core Ride Features (Week 2-3)
 **Ride Management:**
-- [ ] Create ride form with:
+- [x] Create ride form with:
   - Title, description
   - Date/time
   - Meeting location (lat/lng)
@@ -45,34 +45,34 @@ A web application connecting cyclists to group rides with smart matching, intera
   - Pace (Casual, Moderate, Fast, Race)
   - Terrain tags
   - Max participants
-- [ ] Browse all rides (list view)
-- [ ] View ride details
-- [ ] Join/leave rides
-- [ ] Edit/delete own rides
-- [ ] Archive past rides automatically
+- [x] Browse all rides (list view)
+- [x] View ride details
+- [x] Join/leave rides
+- [x] Edit/delete own rides
+- [x] Archive past rides automatically
 
 ### Phase 4: Search & Discovery (Week 3-4)
 **Advanced Filtering:**
-- [ ] Filter by:
-  - Ride type
-  - Difficulty level
-  - Pace
-  - Distance from user
-  - Date range
-  - Terrain type
-- [ ] Search by keywords
+- [x] Filter by:
+  - [x] Ride type
+  - [x] Difficulty level
+  - [ ] Pace
+  - [x] Distance from user
+  - [ ] Date range
+  - [ ] Terrain type
+- [x] Search by keywords
 - [ ] Sort options (date, distance, participants)
 
 **Interactive Map:**
-- [ ] Leaflet.js integration
-- [ ] Display all rides as markers
+- [x] Leaflet.js integration
+- [x] Display all rides as markers
 - [ ] Cluster markers for nearby rides
-- [ ] Click marker to view ride preview
+- [x] Click marker to view ride preview
 - [ ] Filter map by search criteria
 
 ### Phase 5: Smart Matching (Week 4)
 **Preference System:**
-- [ ] User preference profile:
+- [x] User preference profile:
   - Preferred ride types
   - Terrain preferences
   - Difficulty levels
@@ -89,7 +89,7 @@ A web application connecting cyclists to group rides with smart matching, intera
 - [ ] User activity feed
 - [ ] Club creation and membership
 - [ ] Club-specific rides
-- [ ] Ride participant list
+- [x] Ride participant list
 - [ ] User profiles (public view)
 
 ## Technical Stack
