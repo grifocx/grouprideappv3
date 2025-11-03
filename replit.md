@@ -33,6 +33,61 @@ Preferred communication style: Simple, everyday language.
 - **October 28, 2025:** Converted all distance measurements to imperial units (miles)
 - **October 28, 2025:** Rebranded from "RideConnect" to "GroupRideApp"
 
+## Features
+
+### Recurring Rides
+
+The platform supports creating rides that repeat on a regular schedule, enabling organizers to set up weekly training rides, monthly social events, or biweekly club meetups without creating individual entries for each occurrence.
+
+**Configuration Options:**
+- **Recurrence Pattern:** Weekly, Biweekly, or Monthly
+- **Day of Week:** For weekly/biweekly patterns, specify which day the ride repeats (Sunday through Saturday)
+- **End Date:** Optional - set a specific end date or leave blank to generate instances up to 90 days ahead
+- **Base Details:** All ride details (title, type, difficulty, pace, distance, location, etc.) are inherited by each occurrence
+
+**Technical Implementation:**
+- Single database record stores the recurring ride configuration
+- Backend expansion logic (`server/recurring-rides.ts`) generates virtual instances on-the-fly when rides are queried
+- Each virtual instance includes:
+  - `instanceId`: Unique identifier for UI rendering (format: `${rideId}_${isoDate}`)
+  - `instanceDate`: The specific occurrence date
+  - `isRecurringInstance`: Boolean flag marking it as a virtual instance
+  - Original `id`: Preserved for API calls (join, leave, participants)
+- Virtual instances are sorted by date and displayed alongside one-time rides
+
+**User Experience:**
+- Recurring rides display a badge showing their pattern (Weekly, Biweekly, Monthly)
+- Users see all upcoming occurrences in the ride list
+- Joining a recurring ride currently joins all occurrences (single participant record)
+- Recurring rides can be archived like regular rides
+
+**Limitations (MVP):**
+- Joining applies to all occurrences, not individual instances
+- Maximum 52 instances generated per recurring ride to prevent performance issues
+- Modifications to recurring rides affect all future occurrences
+
+### Ride Discovery and Filtering
+
+Users can discover rides through comprehensive filtering and search capabilities:
+- Filter by ride type (MTB, Road, Gravel)
+- Filter by difficulty level (Beginner, Intermediate, Advanced, Expert)
+- Filter by distance range (0-200 miles)
+- Search by ride title
+- All filters work with both one-time and recurring rides
+
+### Ride Participation
+
+- Join and leave rides through the ride detail modal
+- Real-time participant count tracking
+- Validation prevents joining full or archived rides
+- View organized rides vs joined rides in "My Rides" page
+
+### Interactive Map
+
+- Visual display of ride locations using Leaflet.js
+- Marker clustering for dense areas
+- Click markers to view ride details
+
 ## System Architecture
 
 ### Frontend Architecture
@@ -76,11 +131,13 @@ Preferred communication style: Simple, everyday language.
 **Schema Design:**
 - **Users table:** Stores authentication credentials, profile information (email, club affiliation), and geographic coordinates for location-based features.
 - **User Preferences table:** Stores personalized filter settings (ride types, difficulties, paces, terrains, available days, distance ranges, search radius) with cascade deletion on user removal.
-- **Rides table:** Contains ride details including title, type, date/time, location coordinates, distance, difficulty, pace, terrain, participant limits, and organizer reference. Supports archiving for completed rides.
+- **Rides table:** Contains ride details including title, type, date/time, location coordinates, distance, difficulty, pace, terrain, participant limits, and organizer reference. Supports archiving for completed rides. Includes recurring ride configuration (isRecurring, recurrencePattern, recurrenceDayOfWeek, recurrenceEndDate).
 - **Ride Participants table:** Junction table managing many-to-many relationships between users and rides with status tracking.
 - **Comments table:** User-generated comments on rides with timestamps and references to both users and rides.
 
 **Geographic Features:** Latitude/longitude coordinates stored for both users and rides to enable location-based filtering and map visualization.
+
+**Recurring Rides:** The system supports rides that repeat on a schedule (weekly, biweekly, or monthly). Recurring rides are stored once in the database with pattern configuration, then expanded into virtual instances on-the-fly for display. This approach keeps the database lean while providing users with a comprehensive view of upcoming ride occurrences.
 
 ### External Dependencies
 
