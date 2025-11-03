@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Loader2 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Plus, Loader2, Repeat } from "lucide-react";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -29,6 +30,10 @@ export function CreateRideModal() {
     terrain: "",
     maxParticipants: "",
     description: "",
+    isRecurring: false,
+    recurrencePattern: "",
+    recurrenceDayOfWeek: "",
+    recurrenceEndDate: "",
   });
 
   const createMutation = useMutation({
@@ -58,6 +63,10 @@ export function CreateRideModal() {
         terrain: "",
         maxParticipants: "",
         description: "",
+        isRecurring: false,
+        recurrencePattern: "",
+        recurrenceDayOfWeek: "",
+        recurrenceEndDate: "",
       });
     },
     onError: (error: Error) => {
@@ -89,14 +98,28 @@ export function CreateRideModal() {
       return;
     }
 
-    createMutation.mutate({
+    const submitData: any = {
       ...formData,
       date: new Date(formData.date),
       distance: parseInt(formData.distance),
       maxParticipants: parseInt(formData.maxParticipants),
       latitude: coordinates.lat,
       longitude: coordinates.lng,
-    });
+    };
+
+    if (formData.isRecurring) {
+      submitData.isRecurring = true;
+      submitData.recurrencePattern = formData.recurrencePattern || null;
+      submitData.recurrenceDayOfWeek = formData.recurrenceDayOfWeek ? parseInt(formData.recurrenceDayOfWeek) : null;
+      submitData.recurrenceEndDate = formData.recurrenceEndDate ? new Date(formData.recurrenceEndDate) : null;
+    } else {
+      submitData.isRecurring = false;
+      submitData.recurrencePattern = null;
+      submitData.recurrenceDayOfWeek = null;
+      submitData.recurrenceEndDate = null;
+    }
+
+    createMutation.mutate(submitData);
   };
 
   return (
@@ -212,6 +235,84 @@ export function CreateRideModal() {
                   data-testid="input-time"
                 />
               </div>
+            </div>
+
+            <div className="space-y-4 p-4 rounded-lg border bg-muted/30">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <Repeat className="h-4 w-4 text-primary" />
+                  <div>
+                    <Label htmlFor="isRecurring" className="cursor-pointer">Recurring Ride</Label>
+                    <p className="text-xs text-muted-foreground">This ride repeats on a schedule</p>
+                  </div>
+                </div>
+                <Switch
+                  id="isRecurring"
+                  checked={formData.isRecurring}
+                  onCheckedChange={(checked) => setFormData({ ...formData, isRecurring: checked })}
+                  data-testid="switch-recurring"
+                />
+              </div>
+
+              {formData.isRecurring && (
+                <div className="space-y-4 pt-2">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="recurrencePattern">Frequency</Label>
+                      <Select
+                        value={formData.recurrencePattern}
+                        onValueChange={(value) => setFormData({ ...formData, recurrencePattern: value })}
+                      >
+                        <SelectTrigger data-testid="select-recurrence-pattern">
+                          <SelectValue placeholder="Select frequency" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="weekly">Weekly</SelectItem>
+                          <SelectItem value="biweekly">Biweekly</SelectItem>
+                          <SelectItem value="monthly">Monthly</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {(formData.recurrencePattern === "weekly" || formData.recurrencePattern === "biweekly") && (
+                      <div>
+                        <Label htmlFor="recurrenceDayOfWeek">Day of Week</Label>
+                        <Select
+                          value={formData.recurrenceDayOfWeek}
+                          onValueChange={(value) => setFormData({ ...formData, recurrenceDayOfWeek: value })}
+                        >
+                          <SelectTrigger data-testid="select-day-of-week">
+                            <SelectValue placeholder="Select day" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="0">Sunday</SelectItem>
+                            <SelectItem value="1">Monday</SelectItem>
+                            <SelectItem value="2">Tuesday</SelectItem>
+                            <SelectItem value="3">Wednesday</SelectItem>
+                            <SelectItem value="4">Thursday</SelectItem>
+                            <SelectItem value="5">Friday</SelectItem>
+                            <SelectItem value="6">Saturday</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="recurrenceEndDate">End Date (Optional)</Label>
+                    <Input
+                      id="recurrenceEndDate"
+                      type="date"
+                      value={formData.recurrenceEndDate}
+                      onChange={(e) => setFormData({ ...formData, recurrenceEndDate: e.target.value })}
+                      data-testid="input-recurrence-end-date"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Leave blank to repeat indefinitely (up to 90 days ahead)
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="space-y-2">
