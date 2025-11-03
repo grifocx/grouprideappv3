@@ -4,12 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Calendar, Clock, MapPin, TrendingUp, Mountain, Users, Repeat } from "lucide-react";
 import { format } from "date-fns";
 import { Ride, RideParticipant } from "@shared/schema";
+import type { ExpandedRide } from "../../../server/recurring-rides";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
 interface RideDetailModalProps {
-  ride: Ride | null;
+  ride: Ride | ExpandedRide | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }

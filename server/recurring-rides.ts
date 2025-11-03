@@ -3,6 +3,7 @@ import { Ride } from "@shared/schema";
 export interface ExpandedRide extends Ride {
   instanceDate?: Date;
   isRecurringInstance?: boolean;
+  instanceId?: string;
 }
 
 function addDays(date: Date, days: number): Date {
@@ -64,12 +65,13 @@ export function expandRecurringRides(rides: Ride[], lookAheadDays: number = 90):
       }
 
       while (currentDate <= effectiveEndDate && instanceCount < maxInstances) {
+        const isoDate = currentDate.toISOString();
         expanded.push({
           ...ride,
-          id: `${ride.id}_${currentDate.toISOString()}`,
           date: currentDate,
           instanceDate: new Date(currentDate),
           isRecurringInstance: true,
+          instanceId: `${ride.id}_${isoDate}`,
         });
         
         currentDate = addWeeks(currentDate, 1);
@@ -81,12 +83,13 @@ export function expandRecurringRides(rides: Ride[], lookAheadDays: number = 90):
       }
 
       while (currentDate <= effectiveEndDate && instanceCount < maxInstances) {
+        const isoDate = currentDate.toISOString();
         expanded.push({
           ...ride,
-          id: `${ride.id}_${currentDate.toISOString()}`,
           date: currentDate,
           instanceDate: new Date(currentDate),
           isRecurringInstance: true,
+          instanceId: `${ride.id}_${isoDate}`,
         });
         
         currentDate = addWeeks(currentDate, 2);
@@ -95,12 +98,13 @@ export function expandRecurringRides(rides: Ride[], lookAheadDays: number = 90):
     } else if (ride.recurrencePattern === "monthly") {
       while (currentDate <= effectiveEndDate && instanceCount < maxInstances) {
         if (currentDate >= now) {
+          const isoDate = currentDate.toISOString();
           expanded.push({
             ...ride,
-            id: `${ride.id}_${currentDate.toISOString()}`,
             date: currentDate,
             instanceDate: new Date(currentDate),
             isRecurringInstance: true,
+            instanceId: `${ride.id}_${isoDate}`,
           });
         }
         

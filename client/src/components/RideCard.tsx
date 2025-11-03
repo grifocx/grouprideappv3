@@ -4,13 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Calendar, Clock, MapPin, TrendingUp, Repeat } from "lucide-react";
 import { format } from "date-fns";
 import { Ride } from "@shared/schema";
+import type { ExpandedRide } from "../../../server/recurring-rides";
 
 interface RideCardProps {
-  ride: Ride;
+  ride: Ride | ExpandedRide;
   onClick?: () => void;
 }
 
 export function RideCard({ ride, onClick }: RideCardProps) {
+  const expandedRide = ride as ExpandedRide;
+  const uniqueId = expandedRide.instanceId || ride.id;
+  
   const difficultyColors = {
     Beginner: "bg-chart-3 text-foreground",
     Intermediate: "bg-chart-2 text-accent-foreground",
@@ -34,7 +38,7 @@ export function RideCard({ ride, onClick }: RideCardProps) {
     <Card 
       className="hover-elevate cursor-pointer" 
       onClick={onClick}
-      data-testid={`card-ride-${ride.id}`}
+      data-testid={`card-ride-${uniqueId}`}
     >
       <CardHeader className="pb-4">
         <div className="flex items-start justify-between gap-4">
@@ -58,7 +62,7 @@ export function RideCard({ ride, onClick }: RideCardProps) {
                 </Badge>
               )}
             </div>
-            <h3 className="font-bold text-lg mb-1" data-testid={`text-ride-title-${ride.id}`}>
+            <h3 className="font-bold text-lg mb-1" data-testid={`text-ride-title-${uniqueId}`}>
               {ride.title}
             </h3>
           </div>

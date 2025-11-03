@@ -10,6 +10,14 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+- **November 3, 2025:** Implemented recurring rides feature:
+  - Users can now create rides that repeat on a weekly, biweekly, or monthly schedule
+  - Recurring rides show a badge with the recurrence pattern (Weekly, Biweekly, Monthly)
+  - Supports day-of-week selection for weekly/biweekly patterns
+  - Optional end date configuration (defaults to 90 days ahead if not specified)
+  - Virtual instances generated on-the-fly for display without creating duplicate database records
+  - Backend expansion logic automatically generates recurring ride instances within the query window
+  - Schema fields: isRecurring, recurrencePattern, recurrenceDayOfWeek, recurrenceEndDate
 - **October 30, 2025:** Implemented ride joining feature:
   - Users can now join and leave rides through the ride detail modal
   - Real-time participant count displayed (e.g., "3 / 8 riders")

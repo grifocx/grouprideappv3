@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Ride } from "@shared/schema";
+import type { ExpandedRide } from "../../../server/recurring-rides";
 import { RideCard } from "@/components/RideCard";
 import { RideFilters, type RideFiltersState } from "@/components/RideFilters";
 import { CreateRideModal } from "@/components/CreateRideModal";
@@ -60,7 +61,16 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <RideFilters filters={filters} onFiltersChange={setFilters} />
+        <RideFilters 
+          filters={filters} 
+          onFiltersChange={setFilters}
+          onClear={() => setFilters({
+            rideTypes: [],
+            difficulties: [],
+            distanceRange: [0, 200],
+            availableDays: [],
+          })}
+        />
       </aside>
 
       <main className="flex-1 overflow-y-auto">
@@ -87,13 +97,17 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-              {filteredRides.map((ride) => (
-                <RideCard
-                  key={ride.id}
-                  ride={ride}
-                  onClick={() => setSelectedRide(ride)}
-                />
-              ))}
+              {filteredRides.map((ride) => {
+                const expandedRide = ride as ExpandedRide;
+                const uniqueKey = expandedRide.instanceId || ride.id;
+                return (
+                  <RideCard
+                    key={uniqueKey}
+                    ride={ride}
+                    onClick={() => setSelectedRide(ride)}
+                  />
+                );
+              })}
             </div>
           )}
         </div>
