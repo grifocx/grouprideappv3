@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
 import { insertUserPreferencesSchema } from "@shared/schema";
+import { expandRecurringRides } from "./recurring-rides";
 
 function requireAuth(req: any, res: any, next: any) {
   if (!req.isAuthenticated()) {
@@ -70,7 +71,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/rides", async (req, res, next) => {
     try {
       const rides = await storage.getAllRides();
-      res.json(rides);
+      const expandedRides = expandRecurringRides(rides);
+      res.json(expandedRides);
     } catch (error) {
       next(error);
     }
@@ -91,7 +93,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/my-rides", requireAuth, async (req, res, next) => {
     try {
       const rides = await storage.getRidesByOrganizer(req.user!.id);
-      res.json(rides);
+      const expandedRides = expandRecurringRides(rides);
+      res.json(expandedRides);
     } catch (error) {
       next(error);
     }
@@ -165,7 +168,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const allRides = await storage.getAllRides();
       const joinedRides = allRides.filter(ride => rideIds.includes(ride.id));
-      res.json(joinedRides);
+      const expandedRides = expandRecurringRides(joinedRides);
+      res.json(expandedRides);
     } catch (error) {
       next(error);
     }
