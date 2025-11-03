@@ -47,6 +47,10 @@ export const rides = pgTable("rides", {
   description: text("description"),
   organizerId: varchar("organizer_id").notNull().references(() => users.id, { onDelete: "cascade" }),
   isArchived: boolean("is_archived").default(false),
+  isRecurring: boolean("is_recurring").default(false),
+  recurrencePattern: text("recurrence_pattern"),
+  recurrenceDayOfWeek: integer("recurrence_day_of_week"),
+  recurrenceEndDate: timestamp("recurrence_end_date"),
   createdAt: timestamp("created_at").default(sql`now()`),
 });
 
@@ -79,6 +83,7 @@ export const insertRideSchema = createInsertSchema(rides).omit({
   isArchived: true,
 }).extend({
   date: z.coerce.date(),
+  recurrenceEndDate: z.coerce.date().optional().nullable(),
 });
 
 export const insertRideParticipantSchema = createInsertSchema(rideParticipants).omit({
