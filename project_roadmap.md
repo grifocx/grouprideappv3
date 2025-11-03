@@ -45,11 +45,13 @@ A web application connecting cyclists to group rides with smart matching, intera
   - Pace (Casual, Moderate, Fast, Race)
   - Terrain tags
   - Max participants
+  - **Recurring ride configuration (Weekly, Biweekly, Monthly)**
 - [x] Browse all rides (list view)
 - [x] View ride details
 - [x] Join/leave rides
 - [x] Edit/delete own rides
 - [x] Archive past rides automatically
+- [x] **Recurring rides with virtual instance expansion**
 
 ### Phase 4: Search & Discovery (Week 3-4)
 **Advanced Filtering:**
@@ -127,6 +129,7 @@ A web application connecting cyclists to group rides with smart matching, intera
 ✅ Comments on rides
 ✅ Geographic search within radius
 ✅ Past ride archive
+✅ **Recurring rides (weekly, biweekly, monthly)**
 
 ### Out of Scope (Future Enhancements)
 ❌ Real-time chat
@@ -162,6 +165,7 @@ A web application connecting cyclists to group rides with smart matching, intera
 - ride_type, difficulty, pace
 - terrain_tags[]
 - max_participants, is_archived
+- **is_recurring, recurrence_pattern, recurrence_day_of_week, recurrence_end_date**
 - created_at, updated_at
 
 ### RideParticipants
