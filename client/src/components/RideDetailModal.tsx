@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, MapPin, TrendingUp, Mountain, Users } from "lucide-react";
+import { Calendar, Clock, MapPin, TrendingUp, Mountain, Users, Repeat } from "lucide-react";
 import { format } from "date-fns";
 import { Ride, RideParticipant } from "@shared/schema";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -110,6 +110,14 @@ export function RideDetailModal({
                 <Badge variant="secondary" className="text-xs">
                   {ride.terrain}
                 </Badge>
+                {ride.isRecurring && (
+                  <Badge variant="outline" className="text-xs gap-1">
+                    <Repeat className="h-3 w-3" />
+                    {ride.recurrencePattern === "weekly" ? "Weekly" : 
+                     ride.recurrencePattern === "biweekly" ? "Biweekly" : 
+                     ride.recurrencePattern === "monthly" ? "Monthly" : "Recurring"}
+                  </Badge>
+                )}
               </div>
               <DialogTitle className="text-2xl mb-2">{ride.title}</DialogTitle>
             </div>

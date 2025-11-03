@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, MapPin, TrendingUp } from "lucide-react";
+import { Calendar, Clock, MapPin, TrendingUp, Repeat } from "lucide-react";
 import { format } from "date-fns";
 import { Ride } from "@shared/schema";
 
@@ -49,6 +49,14 @@ export function RideCard({ ride, onClick }: RideCardProps) {
               <Badge variant="secondary" className="text-xs">
                 {ride.terrain}
               </Badge>
+              {ride.isRecurring && (
+                <Badge variant="outline" className="text-xs gap-1">
+                  <Repeat className="h-3 w-3" />
+                  {ride.recurrencePattern === "weekly" ? "Weekly" : 
+                   ride.recurrencePattern === "biweekly" ? "Biweekly" : 
+                   ride.recurrencePattern === "monthly" ? "Monthly" : "Recurring"}
+                </Badge>
+              )}
             </div>
             <h3 className="font-bold text-lg mb-1" data-testid={`text-ride-title-${ride.id}`}>
               {ride.title}
