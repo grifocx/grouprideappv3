@@ -56,9 +56,12 @@ Drawing inspiration from Strava's data density and community focus, combined wit
 ## Component Library
 
 ### Navigation
-- **Top Navigation Bar:** Fixed, h-16, with logo left, search center, user menu right
-- **Mobile Navigation:** Bottom tab bar (h-16) with 4 primary actions: Discover, Map, My Rides, Profile
-- **Secondary Navigation:** Horizontal tab navigation for view switching (List/Map/Calendar)
+- **Desktop Navigation:** Fixed sidebar (w-80 / 20rem) with logo, navigation links, and user menu
+- **Mobile Navigation (≤768px):** Fixed bottom tab bar (h-16) with 4 primary actions: Dashboard, Map, My Rides, New Ride
+  - Bottom navigation hidden on desktop (≥md breakpoint)
+  - Shared navigation configuration ensures consistency between desktop sidebar and mobile bottom nav
+  - All nav items include icons, labels, and data-testids for accessibility
+- **Header:** Responsive padding (p-3 md:p-4) with sidebar toggle (desktop) and theme toggle
 
 ### Cards & Lists
 - **Ride Card (List View):**
@@ -82,25 +85,29 @@ Drawing inspiration from Strava's data density and community focus, combined wit
 - **Text Inputs:** h-12, rounded-lg, border-2
 - **Select Dropdowns:** h-12, custom styled with down arrow icon
 - **Checkboxes/Radio:** Custom styled, 1.25rem size
-- **Multi-select Tags:** Pill-based with close icons
 - **Date/Time Picker:** Calendar popup with time selector
-- **Range Sliders:** For pace, distance, difficulty ranges with dual handles
+- **Range Sliders:** For distance ranges with dual handles (currently single handle for distance only)
 
 ### Filters & Search
-- **Filter Panel:** Sticky sidebar (w-80) with collapsible sections
+- **Desktop Filter Panel:** Fixed sidebar (w-80) with collapsible sections
   - Ride Type (checkbox group)
-  - Date Range (calendar picker)
-  - Distance/Pace Range (dual-handle sliders)
-  - Difficulty Level (button group)
-  - Available Days (day selector grid)
-- **Active Filter Pills:** Display above results with clear-all option
+  - Difficulty Level (checkbox group)
+  - Distance Range (slider)
+  - Search by title (text input)
+  - Future: Date Range, Pace Range, Terrain Type, Available Days
+- **Mobile Filter Panel (≤768px):** Sheet/Drawer component that slides in from bottom
+  - Triggered by floating action button (FAB) in bottom-right
+  - FAB positioned at bottom-20 right-4 (80px from bottom, 16px from right)
+  - FAB size: h-14 w-14 (56px diameter) for easy thumb access
+  - Contains same filter UI as desktop sidebar
+  - Dismissible by clicking outside or close button
+- **Active Filter Pills:** Display above results with clear-all option (future enhancement)
 
 ### Map Components
-- **Interactive Map:** Leaflet.js integration, full-viewport height
+- **Interactive Map:** Leaflet.js integration, responsive height (mobile-optimized)
 - **Map Markers:** Custom styled with ride type icons
-- **Cluster Markers:** Numbered circles for multiple rides in same area
-- **Geolocation Control:** FAB in bottom-right for "Center on Me"
-- **Radius Visualizer:** Semi-transparent circle showing search radius
+- **Geolocation Control:** FAB in bottom-right for "Center on Me" (future enhancement)
+- **Radius Visualizer:** Semi-transparent circle showing search radius (future enhancement)
 
 ### Action Elements
 - **Primary Button:** h-12, rounded-lg, font-weight 600
@@ -122,8 +129,16 @@ Drawing inspiration from Strava's data density and community focus, combined wit
 - **Club Badge:** Shield-style icon with club name
 
 ### Modals & Overlays
-- **Ride Detail Modal:** Slide-in from right (w-full md:w-2/3 lg:w-1/2)
-- **Create Ride Form:** Full-screen overlay on mobile, centered modal on desktop (max-w-2xl)
+- **Ride Detail Modal:** 
+  - Mobile (≤768px): Full-screen (h-full) with single-column layout
+  - Desktop (≥768px): Slide-in from right (w-2/3 lg:w-1/2)
+  - Responsive padding: p-4 md:p-6
+  - Stacked action buttons on mobile, horizontal on desktop
+- **Create Ride Form:** 
+  - Mobile (≤768px): Full-screen overlay (h-full) with single-column form grid
+  - Desktop (≥768px): Centered modal (max-w-2xl) with two-column form grid
+  - All grid layouts: grid-cols-1 md:grid-cols-2
+  - Responsive padding throughout
 - **Image Lightbox:** Full-screen with navigation controls
 - **Confirmation Dialogs:** Centered, max-w-md
 
@@ -131,14 +146,16 @@ Drawing inspiration from Strava's data density and community focus, combined wit
 
 ## Iconography
 
-**Icon Library:** Heroicons (outline style for most, solid for active states)
+**Icon Library:** Lucide React (consistent icon system throughout)
 
 **Key Icons:**
-- Navigation: Home, Map, Calendar, User
-- Ride Types: Bicycle variants for MTB/Road/Gravel
-- Actions: Plus, Filter, Search, Location, Share
-- Status: Check, Clock, X-mark
-- Social: Heart, Comment, Users
+- Navigation: Home, Map, Calendar, User, Menu
+- Ride Types: Bike, Mountain, Route
+- Actions: Plus, Filter, Search, MapPin, Share, Edit, Trash
+- Status: Check, Clock, X
+- Social: Heart, MessageCircle, Users
+- UI: ChevronDown, ChevronUp, ChevronLeft, ChevronRight
+- Data: TrendingUp, Calendar, Clock
 
 ---
 
@@ -158,9 +175,34 @@ Drawing inspiration from Strava's data density and community focus, combined wit
 
 ## Responsive Breakpoints
 
-- **Mobile:** < 768px - Single column, bottom navigation
-- **Tablet:** 768px - 1024px - Reduced filter sidebar, 2-column grids
-- **Desktop:** > 1024px - Full sidebar, 3-column grids, split views
+**Primary Breakpoint:** 768px (md in Tailwind)
+
+- **Mobile:** < 768px
+  - Single column layouts (grid-cols-1)
+  - Bottom navigation bar (h-16, 64px)
+  - Filter drawer/sheet instead of sidebar
+  - Full-screen modals (h-full)
+  - Reduced padding (p-4)
+  - Smaller typography (text-base, text-xl)
+  - Stacked action buttons (flex-col)
+  - Mobile-optimized map heights
+  - 64px bottom spacing (mb-16) on main content to prevent bottom nav overlap
+  
+- **Desktop:** ≥ 768px
+  - Two-column layouts where appropriate (grid-cols-2)
+  - Fixed sidebar navigation (w-80 / 20rem)
+  - Inline filter sidebar
+  - Regular sized modals (h-auto)
+  - Standard padding (p-6)
+  - Larger typography (text-lg, text-2xl)
+  - Horizontal action buttons (flex-row)
+  - No bottom spacing needed (mb-0)
+
+**Implementation Details:**
+- useIsMobile hook with 768px breakpoint for conditional rendering
+- Shared navigation config between Sidebar and BottomNav
+- Icons include flex-shrink-0 to prevent truncation
+- All interactive elements include data-testids and aria-labels
 
 ---
 

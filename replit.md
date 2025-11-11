@@ -2,7 +2,7 @@
 
 ## Overview
 
-GroupRideApp is a web application that connects cyclists with group rides tailored to their preferences. The platform allows users to discover rides, organize events, view ride locations on an interactive map, and manage their cycling community connections. Users can filter rides by type (MTB, Road, Gravel), difficulty level, pace, terrain, and location to find their perfect cycling experience.
+GroupRideApp is a web application that connects cyclists with group rides tailored to their preferences. The platform allows users to discover rides, organize events, view ride locations on an interactive map, and manage their cycling community connections. Users can filter rides by type (MTB, Road, Gravel), difficulty level, and distance range, plus search by ride title to find their perfect cycling experience.
 
 ## User Preferences
 
@@ -93,8 +93,8 @@ Users can discover rides through comprehensive filtering and search capabilities
 ### Interactive Map
 
 - Visual display of ride locations using Leaflet.js
-- Marker clustering for dense areas
 - Click markers to view ride details
+- Mobile-optimized map heights for different screen sizes
 
 ### Mobile Responsiveness
 
@@ -185,7 +185,7 @@ The application is fully optimized for mobile devices with adaptive layouts and 
 
 **Mapping:**
 - Leaflet.js for interactive map visualization with OpenStreetMap tiles
-- Client-side map rendering with marker clustering for ride locations
+- Client-side map rendering with custom ride location markers
 
 **Development Tools:**
 - Vite for fast development server and optimized production builds
