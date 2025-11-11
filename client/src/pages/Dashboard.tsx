@@ -159,6 +159,7 @@ export default function Dashboard() {
             className="fixed bottom-20 right-4 h-14 w-14 rounded-full shadow-lg z-40"
             onClick={() => setFiltersOpen(true)}
             data-testid="button-open-filters"
+            aria-label="Open filters"
           >
             <Filter className="h-6 w-6" />
           </Button>
