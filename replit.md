@@ -10,6 +10,14 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+- **November 11, 2025:** Implemented comprehensive mobile responsiveness:
+  - Mobile-optimized layout with bottom navigation bar (hidden on desktop ≥768px)
+  - Dashboard filters converted to Sheet/Drawer on mobile with floating action button (FAB)
+  - Full-screen modals on mobile (CreateRideModal, RideDetailModal) with single-column layouts
+  - Responsive typography and spacing across all pages using Tailwind breakpoints
+  - Mobile-optimized map view with appropriate height calculations
+  - Shared navigation configuration for consistency between sidebar and bottom nav
+  - Accessibility improvements including aria-labels for icon-only buttons
 - **November 3, 2025:** Implemented recurring rides feature:
   - Users can now create rides that repeat on a weekly, biweekly, or monthly schedule
   - Recurring rides show a badge with the recurrence pattern (Weekly, Biweekly, Monthly)
@@ -87,6 +95,35 @@ Users can discover rides through comprehensive filtering and search capabilities
 - Visual display of ride locations using Leaflet.js
 - Marker clustering for dense areas
 - Click markers to view ride details
+
+### Mobile Responsiveness
+
+The application is fully optimized for mobile devices with adaptive layouts and mobile-specific navigation:
+
+**Mobile Navigation (≤768px):**
+- Fixed bottom navigation bar with 4 primary actions: Dashboard, Map, My Rides, New Ride
+- Bottom nav hidden on desktop (≥md breakpoint) where sidebar navigation is used
+- Mobile-only floating action button (FAB) on Dashboard for accessing filters
+- 64px bottom spacing on main content to prevent overlap with fixed navigation
+
+**Mobile Layouts:**
+- Dashboard filters presented as Sheet/Drawer that slides in from bottom
+- Modals (Create Ride, Ride Detail) display full-screen on mobile with single-column forms
+- Responsive grid layouts: grid-cols-1 on mobile, grid-cols-2 on desktop
+- Stacked action buttons on mobile, horizontal on desktop
+
+**Responsive Design:**
+- Breakpoint: 768px (md in Tailwind)
+- Reduced padding on mobile (p-4) vs desktop (p-6)
+- Smaller typography on mobile: text-base/text-xl vs text-lg/text-2xl
+- Mobile-optimized map height calculations accounting for header and bottom nav
+- Flex-shrink-0 on icons to prevent truncation on small screens
+
+**Technical Implementation:**
+- Custom `useIsMobile` hook (768px breakpoint) for conditional rendering
+- Shared navigation configuration (`client/src/lib/navigation-config.ts`) ensures consistency
+- FAB positioned at bottom-20 right-4 to clear bottom nav and toasts
+- All interactive elements include data-testids and aria-labels for accessibility
 
 ## System Architecture
 
