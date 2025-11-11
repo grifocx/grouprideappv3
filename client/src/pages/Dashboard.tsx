@@ -7,9 +7,19 @@ import { RideFilters, type RideFiltersState } from "@/components/RideFilters";
 import { CreateRideModal } from "@/components/CreateRideModal";
 import { RideDetailModal } from "@/components/RideDetailModal";
 import { Input } from "@/components/ui/input";
-import { Search, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Search, Loader2, Filter, Plus } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { 
+  Sheet, 
+  SheetContent, 
+  SheetHeader, 
+  SheetTitle,
+  SheetDescription 
+} from "@/components/ui/sheet";
 
 export default function Dashboard() {
+  const isMobile = useIsMobile();
   const [filters, setFilters] = useState<RideFiltersState>({
     rideTypes: [],
     difficulties: [],
@@ -19,6 +29,7 @@ export default function Dashboard() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRide, setSelectedRide] = useState<Ride | null>(null);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const { data: rides = [], isLoading } = useQuery<Ride[]>({
     queryKey: ["/api/rides"],
@@ -40,44 +51,73 @@ export default function Dashboard() {
     return true;
   });
 
-  return (
-    <div className="flex h-full">
-      <aside className="w-80 border-r p-6 space-y-6 overflow-y-auto">
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Filters</h2>
-            <CreateRideModal />
-          </div>
-
-          <div className="relative">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search rides..."
-              className="pl-9"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              data-testid="input-search-rides"
-            />
-          </div>
+  const FiltersSidebar = () => (
+    <div className="space-y-6">
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold">Filters</h2>
+          {!isMobile && <CreateRideModal />}
         </div>
 
-        <RideFilters 
-          filters={filters} 
-          onFiltersChange={setFilters}
-          onClear={() => setFilters({
-            rideTypes: [],
-            difficulties: [],
-            distanceRange: [0, 200],
-            availableDays: [],
-          })}
-        />
-      </aside>
+        <div className="relative">
+          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search rides..."
+            className="pl-9"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            data-testid="input-search-rides"
+          />
+        </div>
+      </div>
 
-      <main className="flex-1 overflow-y-auto">
-        <div className="p-6">
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold mb-2">Discover Rides</h1>
-            <p className="text-muted-foreground">
+      <RideFilters 
+        filters={filters} 
+        onFiltersChange={setFilters}
+        onClear={() => setFilters({
+          rideTypes: [],
+          difficulties: [],
+          distanceRange: [0, 200],
+          availableDays: [],
+        })}
+      />
+    </div>
+  );
+
+  return (
+    <div className="flex h-full">
+      {/* Desktop Sidebar */}
+      {!isMobile && (
+        <aside className="w-80 border-r p-6 overflow-y-auto">
+          <FiltersSidebar />
+        </aside>
+      )}
+
+      {/* Mobile Filter Sheet */}
+      {isMobile && (
+        <Sheet open={filtersOpen} onOpenChange={setFiltersOpen}>
+          <SheetContent side="left" className="w-[85vw] sm:max-w-md overflow-y-auto">
+            <SheetHeader>
+              <SheetTitle>Filters & Search</SheetTitle>
+              <SheetDescription>
+                Filter rides by type, difficulty, and distance
+              </SheetDescription>
+            </SheetHeader>
+            <div className="mt-6">
+              <FiltersSidebar />
+            </div>
+          </SheetContent>
+        </Sheet>
+      )}
+
+      <main className="flex-1 overflow-y-auto relative">
+        <div className="p-4 md:p-6">
+          <div className="mb-4 md:mb-6">
+            <div className="flex items-center justify-between mb-2">
+              <h1 className="text-2xl md:text-3xl font-bold">Discover Rides</h1>
+              {isMobile && <CreateRideModal />}
+            </div>
+            <p className="text-sm md:text-base text-muted-foreground">
               {filteredRides.length} {filteredRides.length === 1 ? "ride" : "rides"} available
             </p>
           </div>
@@ -96,7 +136,7 @@ export default function Dashboard() {
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 md:gap-4">
               {filteredRides.map((ride) => {
                 const expandedRide = ride as ExpandedRide;
                 const uniqueKey = expandedRide.instanceId || ride.id;
@@ -111,6 +151,18 @@ export default function Dashboard() {
             </div>
           )}
         </div>
+
+        {/* Mobile Filter FAB */}
+        {isMobile && (
+          <Button
+            size="icon"
+            className="fixed bottom-20 right-4 h-14 w-14 rounded-full shadow-lg z-40"
+            onClick={() => setFiltersOpen(true)}
+            data-testid="button-open-filters"
+          >
+            <Filter className="h-6 w-6" />
+          </Button>
+        )}
       </main>
 
       {selectedRide && (

@@ -130,11 +130,11 @@ export function CreateRideModal() {
           Create Ride
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[90vh] md:max-h-[90vh] h-full md:h-auto overflow-y-auto p-4 md:p-6">
         <DialogHeader>
-          <DialogTitle className="text-2xl">Create New Ride</DialogTitle>
+          <DialogTitle className="text-xl md:text-2xl">Create New Ride</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
           <div className="space-y-4">
             <div>
               <Label htmlFor="title">Ride Title</Label>
@@ -148,7 +148,7 @@ export function CreateRideModal() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
               <div>
                 <Label htmlFor="type">Ride Type</Label>
                 <Select value={formData.type} onValueChange={(value) => setFormData({ ...formData, type: value })}>
@@ -179,7 +179,7 @@ export function CreateRideModal() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
               <div>
                 <Label htmlFor="pace">Pace</Label>
                 <Select value={formData.pace} onValueChange={(value) => setFormData({ ...formData, pace: value })}>
@@ -211,7 +211,7 @@ export function CreateRideModal() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
               <div>
                 <Label htmlFor="date">Date</Label>
                 <Input
@@ -255,8 +255,8 @@ export function CreateRideModal() {
               </div>
 
               {formData.isRecurring && (
-                <div className="space-y-4 pt-2">
-                  <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-3 md:space-y-4 pt-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                     <div>
                       <Label htmlFor="recurrencePattern">Frequency</Label>
                       <Select
@@ -317,7 +317,7 @@ export function CreateRideModal() {
 
             <div className="space-y-2">
               <Label>Meeting Location</Label>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                 <Input
                   id="city"
                   value={formData.city}
@@ -351,7 +351,7 @@ export function CreateRideModal() {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
               <div>
                 <Label htmlFor="distance">Distance (mi)</Label>
                 <Input
@@ -393,13 +393,14 @@ export function CreateRideModal() {
             </div>
           </div>
 
-          <div className="flex gap-3 justify-end">
+          <div className="flex flex-col-reverse md:flex-row gap-2 md:gap-3 md:justify-end">
             <Button
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
               disabled={createMutation.isPending || isGeocoding}
               data-testid="button-cancel-create"
+              className="w-full md:w-auto"
             >
               Cancel
             </Button>
@@ -407,6 +408,7 @@ export function CreateRideModal() {
               type="submit"
               disabled={createMutation.isPending || isGeocoding}
               data-testid="button-submit-ride"
+              className="w-full md:w-auto"
             >
               {isGeocoding ? (
                 <>

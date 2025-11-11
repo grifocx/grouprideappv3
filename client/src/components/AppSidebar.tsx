@@ -10,19 +10,12 @@ import {
   SidebarHeader,
   SidebarFooter,
 } from "@/components/ui/sidebar";
-import { Home, Map, Calendar, User, Archive, Bike, LogOut } from "lucide-react";
+import { Bike, LogOut } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "./UserAvatar";
-
-const menuItems = [
-  { title: "Discover", url: "/", icon: Home },
-  { title: "Map View", url: "/map", icon: Map },
-  { title: "My Rides", url: "/my-rides", icon: Calendar },
-  { title: "Archive", url: "/archive", icon: Archive },
-  { title: "Profile", url: "/profile", icon: User },
-];
+import { navigationItems } from "@/lib/navigation-config";
 
 export function AppSidebar() {
   const [location] = useLocation();
@@ -47,12 +40,12 @@ export function AppSidebar() {
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuItems.map((item) => (
+              {navigationItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
                     isActive={location === item.url}
-                    data-testid={`link-${item.title.toLowerCase().replace(/\s/g, '-')}`}
+                    data-testid={item.testId}
                   >
                     <Link href={item.url}>
                       <item.icon className="h-5 w-5" />

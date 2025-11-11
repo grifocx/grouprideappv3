@@ -23,10 +23,10 @@ export default function MapPage() {
     }));
 
   return (
-    <div className="flex-1 p-6 overflow-hidden">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold mb-1">Map View</h2>
-        <p className="text-muted-foreground">Explore rides near you</p>
+    <div className="flex-1 p-4 md:p-6 overflow-hidden">
+      <div className="mb-4 md:mb-6">
+        <h2 className="text-xl md:text-2xl font-bold mb-1">Map View</h2>
+        <p className="text-sm md:text-base text-muted-foreground">Explore rides near you</p>
       </div>
 
       {isLoading ? (
@@ -35,13 +35,13 @@ export default function MapPage() {
         </div>
       ) : mapLocations.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-lg text-muted-foreground mb-4">No rides with locations found</p>
+          <p className="text-base md:text-lg text-muted-foreground mb-4">No rides with locations found</p>
           <p className="text-sm text-muted-foreground">
             Create a ride with a city and state to see it on the map
           </p>
         </div>
       ) : (
-        <div className="h-[calc(100vh-200px)]">
+        <div className="min-h-[calc(100vh-240px)] md:min-h-[calc(100vh-200px)]">
           <MapView
             locations={mapLocations}
             onLocationClick={(id) => {

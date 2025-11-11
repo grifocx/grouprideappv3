@@ -97,11 +97,11 @@ export function RideDetailModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] md:max-h-[90vh] h-full md:h-auto overflow-y-auto p-4 md:p-6">
         <DialogHeader>
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
-              <div className="flex items-center gap-2 mb-3 flex-wrap">
+              <div className="flex items-center gap-2 mb-2 md:mb-3 flex-wrap">
                 <Badge variant="outline" className="text-xs font-semibold">
                   {ride.type}
                 </Badge>
@@ -120,13 +120,13 @@ export function RideDetailModal({
                   </Badge>
                 )}
               </div>
-              <DialogTitle className="text-2xl mb-2">{ride.title}</DialogTitle>
+              <DialogTitle className="text-xl md:text-2xl mb-2">{ride.title}</DialogTitle>
             </div>
           </div>
         </DialogHeader>
 
-        <div className="space-y-6">
-          <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-4 md:space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
             <div className="flex items-center gap-3 p-4 rounded-lg bg-muted">
               <Calendar className="h-5 w-5 text-primary" />
               <div>
@@ -143,33 +143,33 @@ export function RideDetailModal({
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-4 rounded-lg bg-muted col-span-2">
-              <MapPin className="h-5 w-5 text-primary" />
-              <div>
+            <div className="flex items-center gap-3 p-3 md:p-4 rounded-lg bg-muted md:col-span-2">
+              <MapPin className="h-5 w-5 text-primary flex-shrink-0" />
+              <div className="min-w-0">
                 <p className="text-xs text-muted-foreground">Location</p>
-                <p className="font-semibold">{formatLocation()}</p>
+                <p className="font-semibold truncate">{formatLocation()}</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-4 rounded-lg bg-muted">
-              <TrendingUp className="h-5 w-5 text-primary" />
-              <div>
+            <div className="flex items-center gap-3 p-3 md:p-4 rounded-lg bg-muted">
+              <TrendingUp className="h-5 w-5 text-primary flex-shrink-0" />
+              <div className="min-w-0">
                 <p className="text-xs text-muted-foreground">Distance & Pace</p>
                 <p className="font-semibold">{ride.distance} mi • {ride.pace}</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-4 rounded-lg bg-muted">
-              <Mountain className="h-5 w-5 text-primary" />
-              <div>
+            <div className="flex items-center gap-3 p-3 md:p-4 rounded-lg bg-muted">
+              <Mountain className="h-5 w-5 text-primary flex-shrink-0" />
+              <div className="min-w-0">
                 <p className="text-xs text-muted-foreground">Terrain</p>
                 <p className="font-semibold">{ride.terrain}</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-4 rounded-lg bg-muted col-span-2">
-              <Users className="h-5 w-5 text-primary" />
-              <div>
+            <div className="flex items-center gap-3 p-3 md:p-4 rounded-lg bg-muted md:col-span-2">
+              <Users className="h-5 w-5 text-primary flex-shrink-0" />
+              <div className="min-w-0">
                 <p className="text-xs text-muted-foreground">Participants</p>
                 <p className="font-semibold" data-testid="text-participant-count">
                   {isLoadingParticipants ? "..." : `${participants.length} / ${ride.maxParticipants}`} riders
@@ -180,13 +180,13 @@ export function RideDetailModal({
 
           {ride.description && (
             <div>
-              <h3 className="font-semibold text-lg mb-3">Description</h3>
-              <p className="text-muted-foreground whitespace-pre-wrap">{ride.description}</p>
+              <h3 className="font-semibold text-base md:text-lg mb-2 md:mb-3">Description</h3>
+              <p className="text-sm md:text-base text-muted-foreground whitespace-pre-wrap">{ride.description}</p>
             </div>
           )}
 
           {currentUser && !isOrganizer && !isArchived && (
-            <div className="pt-4 border-t">
+            <div className="pt-3 md:pt-4 border-t">
               {isUserJoined ? (
                 <Button
                   variant="outline"

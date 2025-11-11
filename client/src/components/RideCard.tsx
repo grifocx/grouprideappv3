@@ -40,10 +40,10 @@ export function RideCard({ ride, onClick }: RideCardProps) {
       onClick={onClick}
       data-testid={`card-ride-${uniqueId}`}
     >
-      <CardHeader className="pb-4">
-        <div className="flex items-start justify-between gap-4">
+      <CardHeader className="pb-3 md:pb-4 p-4 md:p-6">
+        <div className="flex items-start justify-between gap-3 md:gap-4">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-2 flex-wrap">
+            <div className="flex items-center gap-1.5 md:gap-2 mb-2 flex-wrap">
               <Badge variant="outline" className="text-xs font-semibold">
                 {typeIcons[ride.type] || "🚴"} {ride.type}
               </Badge>
@@ -62,35 +62,35 @@ export function RideCard({ ride, onClick }: RideCardProps) {
                 </Badge>
               )}
             </div>
-            <h3 className="font-bold text-lg mb-1" data-testid={`text-ride-title-${uniqueId}`}>
+            <h3 className="font-bold text-base md:text-lg mb-1" data-testid={`text-ride-title-${uniqueId}`}>
               {ride.title}
             </h3>
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 gap-3 text-sm">
+      <CardContent className="space-y-3 md:space-y-4 p-4 md:p-6 pt-0">
+        <div className="grid grid-cols-2 gap-2 md:gap-3 text-sm">
           <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-muted-foreground" />
-            <span className="font-medium">{format(new Date(ride.date), "MMM dd, yyyy")}</span>
+            <Calendar className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+            <span className="font-medium truncate">{format(new Date(ride.date), "MMM dd, yyyy")}</span>
           </div>
           <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-muted-foreground" />
+            <Clock className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             <span className="font-medium">{ride.time}</span>
           </div>
           <div className="flex items-center gap-2 col-span-2">
-            <MapPin className="h-4 w-4 text-muted-foreground" />
+            <MapPin className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             <span className="font-medium truncate">{formatLocation()}</span>
           </div>
           <div className="flex items-center gap-2">
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-            <span className="font-medium">{ride.distance} mi • {ride.pace}</span>
+            <TrendingUp className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+            <span className="font-medium truncate">{ride.distance} mi • {ride.pace}</span>
           </div>
         </div>
 
         {ride.description && (
-          <div className="pt-2 border-t">
-            <p className="text-sm text-muted-foreground line-clamp-2">
+          <div className="pt-2 md:pt-2 border-t">
+            <p className="text-xs md:text-sm text-muted-foreground line-clamp-2">
               {ride.description}
             </p>
           </div>
